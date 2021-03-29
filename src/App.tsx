@@ -1,9 +1,15 @@
 import { MainLayout } from './components/MainLayout';
+import { ApolloProvider } from '@apollo/client';
+import { initApollo } from './utils/initApollo';
 
-function App() {
+const App = () => {
+  const client = initApollo();
+
   return (
-    <MainLayout>
-    </MainLayout>
+    <ApolloProvider client={client}>
+      <MainLayout>
+      </MainLayout>
+    </ApolloProvider>
   );
 }
 
