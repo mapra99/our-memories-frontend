@@ -1,4 +1,5 @@
 import { useState, useEffect, SyntheticEvent } from 'react';
+import { useMutation } from '@apollo/client';
 import { Modal } from '../Modal';
 import { ModalTitle } from '../ModalTitle';
 import { InputField } from '../InputField';
@@ -7,15 +8,17 @@ import { InputLabel } from '../InputLabel';
 import { CancelButton } from '../CancelButton';
 import { ActionButton } from '../ActionButton';
 import { NewPhotoModalFormButtons } from './NewPhotoModal.styled';
-
 import { NewPhotoModalProps } from './types';
-
+import { PostModel } from '../../models';
 import { useDirectUpload } from '../../hooks/useDirectUpload';
+import { CREATE_POST } from '../../api/mutations/posts';
 
 export const NewPhotoModal = ({ onClose }: NewPhotoModalProps) => {
   const [name, setName] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
+  const [post, setPost] = useState<PostModel | null>(null);
   const { errors: uploadErrors, blob, uploadFile } = useDirectUpload();
+  const [createPost, { data }] = useMutation(CREATE_POST);
 
   const handleSubmit = (event: SyntheticEvent) => {
     event.preventDefault();
@@ -25,11 +28,16 @@ export const NewPhotoModal = ({ onClose }: NewPhotoModalProps) => {
     uploadFile(file)
   }
 
-  const createPost = () => {
-    // TODO: Build the graphql mutation stuff here to create a new post once the blob was created
-  }
+  useEffect(() => {
+    if(!blob || !name || uploadErrors) return;
+    createPost({ variables: { createPostInput: { title: name, signedBlobId: blob.signed_id }}})
+  }, [name, blob, uploadErrors])
 
-  useEffect(createPost, [blob, uploadErrors])
+  useEffect(() => {
+    if (!data) return;
+    setPost(data.createPost)
+    onClose()
+  }, [data])
 
   return (
     <Modal>
