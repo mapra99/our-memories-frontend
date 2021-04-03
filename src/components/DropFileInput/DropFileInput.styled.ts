@@ -46,4 +46,6 @@ export const DropFileInputImage = styled.img`
   width: 100%;
   height: 100%;
   border-radius: 12px;
+  max-height: 400px;
+  object-fit: contain;
 `

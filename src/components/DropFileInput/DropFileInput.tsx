@@ -27,11 +27,18 @@ export const DropFileInput = ({ onBlobUpload }: DropFileInputProps) => {
 
   return (
     <DropFileInputArea>
-      <DropFileInputField type="file" onChange={onFileSelect} />
+      <DropFileInputField
+        type="file"
+        onChange={onFileSelect}
+        accept="image/*" />
       { fileSrc ? (
-        <DropFileInputImage alt='' src={fileSrc} />
+        <DropFileInputImage
+          alt=''
+          src={fileSrc} />
       ) : (
-        <DropFileInputPlaceholder>Drag & drop your image here</DropFileInputPlaceholder>
+        <DropFileInputPlaceholder>
+          Drag & drop your image here
+        </DropFileInputPlaceholder>
       )}
     </DropFileInputArea>
   )

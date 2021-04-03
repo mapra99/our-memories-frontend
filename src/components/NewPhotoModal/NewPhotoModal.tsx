@@ -18,13 +18,16 @@ export const NewPhotoModal = ({ onClose }: NewPhotoModalProps) => {
   const [name, setName] = useState<string>("");
   const [post, setPost] = useState<PostModel | null>(null);
   const [blob, setBlob] = useState<IBlob | null>(null);
-  const [createPost, { data }] = useMutation(CREATE_POST);
+  const [createPost] = useMutation(CREATE_POST);
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     // TODO: Validate form fields here
-    if (!name) return;
-    console.log('submitting :)')
+    if (!name || !blob) return;
+    const result = await createPost({ variables: { createPostInput: { title: name, signedBlobId: blob.signed_id }}})
+
+    setPost(result.data.createPost);
+    onClose();
   }
 
   return (
