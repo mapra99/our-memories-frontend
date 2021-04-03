@@ -1,4 +1,4 @@
-import { useState, useEffect, SyntheticEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { useMutation } from '@apollo/client';
 import { Modal } from '../Modal';
 import { ModalTitle } from '../ModalTitle';
@@ -7,6 +7,7 @@ import { InputGroup } from '../InputGroup';
 import { InputLabel } from '../InputLabel';
 import { CancelButton } from '../CancelButton';
 import { ActionButton } from '../ActionButton';
+import { DropFileInput } from '../DropFileInput';
 import { NewPhotoModalFormButtons } from './NewPhotoModal.styled';
 import { NewPhotoModalProps } from './types';
 import { PostModel } from '../../models';
@@ -15,29 +16,16 @@ import { CREATE_POST } from '../../api/mutations/posts';
 
 export const NewPhotoModal = ({ onClose }: NewPhotoModalProps) => {
   const [name, setName] = useState<string>("");
-  const [file, setFile] = useState<File | null>(null);
   const [post, setPost] = useState<PostModel | null>(null);
-  const { errors: uploadErrors, blob, uploadFile } = useDirectUpload();
+  const { errors: uploadErrors, blob, fileSrc, onFileSelect } = useDirectUpload();
   const [createPost, { data }] = useMutation(CREATE_POST);
 
-  const handleSubmit = (event: SyntheticEvent) => {
+  const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     // TODO: Validate form fields here
-    if (!name || !file) return;
-
-    uploadFile(file)
+    if (!name || !blob) return;
+    console.log('submitting :)')
   }
-
-  useEffect(() => {
-    if(!blob || !name || uploadErrors) return;
-    createPost({ variables: { createPostInput: { title: name, signedBlobId: blob.signed_id }}})
-  }, [name, blob, uploadErrors])
-
-  useEffect(() => {
-    if (!data) return;
-    setPost(data.createPost)
-    onClose()
-  }, [data])
 
   return (
     <Modal>
@@ -67,7 +55,7 @@ export const NewPhotoModal = ({ onClose }: NewPhotoModalProps) => {
             name="post[file]"
             placeholder="Choose a File"
             accept="image/*"
-            onChange={event => event.target.files && setFile(event.target.files[0]) }/>
+            onChange={onFileSelect}/>
         </InputGroup>
 
         <NewPhotoModalFormButtons>
