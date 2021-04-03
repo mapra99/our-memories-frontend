@@ -10,20 +10,20 @@ import { ActionButton } from '../ActionButton';
 import { DropFileInput } from '../DropFileInput';
 import { NewPhotoModalFormButtons } from './NewPhotoModal.styled';
 import { NewPhotoModalProps } from './types';
+import { IBlob } from '../../hooks/useDirectUpload/types';
 import { PostModel } from '../../models';
-import { useDirectUpload } from '../../hooks/useDirectUpload';
 import { CREATE_POST } from '../../api/mutations/posts';
 
 export const NewPhotoModal = ({ onClose }: NewPhotoModalProps) => {
   const [name, setName] = useState<string>("");
   const [post, setPost] = useState<PostModel | null>(null);
-  const { errors: uploadErrors, blob, fileSrc, onFileSelect } = useDirectUpload();
+  const [blob, setBlob] = useState<IBlob | null>(null);
   const [createPost, { data }] = useMutation(CREATE_POST);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     // TODO: Validate form fields here
-    if (!name || !blob) return;
+    if (!name) return;
     console.log('submitting :)')
   }
 
@@ -50,12 +50,7 @@ export const NewPhotoModal = ({ onClose }: NewPhotoModalProps) => {
           <InputLabel>
             File
           </InputLabel>
-          <InputField
-            type="file"
-            name="post[file]"
-            placeholder="Choose a File"
-            accept="image/*"
-            onChange={onFileSelect}/>
+          <DropFileInput onBlobUpload={(blob: IBlob) => { setBlob(blob) }} />
         </InputGroup>
 
         <NewPhotoModalFormButtons>

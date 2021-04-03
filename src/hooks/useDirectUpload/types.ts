@@ -8,6 +8,6 @@ export type DirectUploadTypes = {
   loading: boolean
   errors: Error | null
   blob: IBlob | null
-  fileSrc: string | ArrayBuffer | null,
+  fileSrc: string | null,
   onFileSelect: (event: FormEvent<HTMLInputElement>) => void,
 }
