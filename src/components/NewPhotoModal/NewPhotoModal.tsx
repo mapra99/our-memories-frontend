@@ -1,4 +1,5 @@
-import { useState, useEffect, SyntheticEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
+import { useMutation } from '@apollo/client';
 import { Modal } from '../Modal';
 import { ModalTitle } from '../ModalTitle';
 import { InputField } from '../InputField';
@@ -6,30 +7,28 @@ import { InputGroup } from '../InputGroup';
 import { InputLabel } from '../InputLabel';
 import { CancelButton } from '../CancelButton';
 import { ActionButton } from '../ActionButton';
+import { DropFileInput } from '../DropFileInput';
 import { NewPhotoModalFormButtons } from './NewPhotoModal.styled';
-
 import { NewPhotoModalProps } from './types';
-
-import { useDirectUpload } from '../../hooks/useDirectUpload';
+import { IBlob } from '../../hooks/useDirectUpload/types';
+import { PostModel } from '../../models';
+import { CREATE_POST } from '../../api/mutations/posts';
 
 export const NewPhotoModal = ({ onClose }: NewPhotoModalProps) => {
   const [name, setName] = useState<string>("");
-  const [file, setFile] = useState<File | null>(null);
-  const { errors: uploadErrors, blob, uploadFile } = useDirectUpload();
+  const [post, setPost] = useState<PostModel | null>(null);
+  const [blob, setBlob] = useState<IBlob | null>(null);
+  const [createPost] = useMutation(CREATE_POST);
 
-  const handleSubmit = (event: SyntheticEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     // TODO: Validate form fields here
-    if (!name || !file) return;
+    if (!name || !blob) return;
+    const result = await createPost({ variables: { createPostInput: { title: name, signedBlobId: blob.signed_id }}})
 
-    uploadFile(file)
+    setPost(result.data.createPost);
+    onClose();
   }
-
-  const createPost = () => {
-    // TODO: Build the graphql mutation stuff here to create a new post once the blob was created
-  }
-
-  useEffect(createPost, [blob, uploadErrors])
 
   return (
     <Modal>
@@ -54,12 +53,7 @@ export const NewPhotoModal = ({ onClose }: NewPhotoModalProps) => {
           <InputLabel>
             File
           </InputLabel>
-          <InputField
-            type="file"
-            name="post[file]"
-            placeholder="Choose a File"
-            accept="image/*"
-            onChange={event => event.target.files && setFile(event.target.files[0]) }/>
+          <DropFileInput onBlobUpload={(blob: IBlob) => { setBlob(blob) }} />
         </InputGroup>
 
         <NewPhotoModalFormButtons>
