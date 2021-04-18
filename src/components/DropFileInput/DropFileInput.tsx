@@ -11,13 +11,13 @@ import {DropFileInputProps} from './props';
 import { useDirectUpload } from '../../hooks/useDirectUpload';
 
 export const DropFileInput = ({ onBlobUpload }: DropFileInputProps) => {
-  const { errors, loading, blob, fileSrc, onFileSelect } = useDirectUpload();
+  const { loading, blob, fileSrc, onFileSelect } = useDirectUpload();
 
   useEffect(() => {
     if (!onBlobUpload || !blob) return
 
     onBlobUpload(blob);
-  }, [blob])
+  }, [blob, onBlobUpload])
 
   if (loading) return (
     <DropFileInputArea>
