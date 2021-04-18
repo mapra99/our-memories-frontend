@@ -1,10 +1,17 @@
 import { PostThumbnailProps } from './types'
 import {
-  PostThumbnailContainer,
-  PostThumbnailImage } from './PostThumbnail.styled'
+  ThumbnailContainer,
+  ThumbnailImage,
+  ThumbnailHoverContainer,
+  ThumbnailTitle } from './PostThumbnail.styled'
 
 export const PostThumbnail = ({post}: PostThumbnailProps) => (
-  <PostThumbnailContainer>
-    <PostThumbnailImage src={post.imageUrl} alt={post.title} />
-  </PostThumbnailContainer>
+  <ThumbnailContainer>
+    <ThumbnailImage src={post.imageUrl} alt={post.title} />
+    <ThumbnailHoverContainer>
+      <ThumbnailTitle>
+        {post.title}
+      </ThumbnailTitle>
+    </ThumbnailHoverContainer>
+  </ThumbnailContainer>
 )
