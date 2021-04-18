@@ -1,34 +1,17 @@
 import { useState } from 'react';
 import { ActionButton } from '../ActionButton';
 import { NewPhotoModal } from '../NewPhotoModal';
-import { SuccessPhotoModal } from '../SuccessPhotoModal';
-import { ErrorPhotoModal } from '../ErrorPhotoModal';
 
 export const NewPhoto = () => {
-  const [formModalVisible, setFormModalVisible] = useState(false);
-  const [successModalVisible, setSuccessModalVisible] = useState(true);
-  const [errorsModalVisible, setErrorsModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <>
-      <ActionButton onClick={() => setFormModalVisible(true)}>
+      <ActionButton onClick={() => setModalVisible(true)}>
         Add a photo
       </ActionButton>
 
-      { formModalVisible && (
-        <NewPhotoModal
-          onClose={() => setFormModalVisible(false)}
-          onSuccess={() => setSuccessModalVisible(true)}
-          onErrors={() => setErrorsModalVisible(true)} />
-      )}
-      { successModalVisible && (
-        <SuccessPhotoModal
-          onClose={() => setSuccessModalVisible(false)} />
-      )}
-      { errorsModalVisible && (
-        <ErrorPhotoModal
-          onClose={() => setErrorsModalVisible(false)} />
-      )}
+      { modalVisible && <NewPhotoModal onClose={() => setModalVisible(false)} />}
     </>
   )
 }
