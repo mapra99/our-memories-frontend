@@ -1,5 +1,4 @@
-import { useState, useEffect, FormEvent } from 'react';
-import { useMutation } from '@apollo/client';
+import { useState, useContext, FormEvent } from 'react';
 import { Modal } from '../Modal';
 import { ModalTitle } from '../ModalTitle';
 import { InputField } from '../InputField';
@@ -11,22 +10,19 @@ import { DropFileInput } from '../DropFileInput';
 import { ModalActionButtons } from '../ModalActionButtons';
 import { NewPhotoModalProps } from './types';
 import { IBlob } from '../../hooks/useDirectUpload/types';
-import { PostModel } from '../../models';
-import { CREATE_POST } from '../../api/mutations/posts';
+import { PostsContext, IPostsContext } from '../../contexts/PostsContext';
 
 export const NewPhotoModal = ({ onClose, onSuccess, onErrors }: NewPhotoModalProps) => {
-  const [name, setName] = useState<string>("");
-  const [post, setPost] = useState<PostModel | null>(null);
+  const [title, setTitle] = useState<string>("");
   const [blob, setBlob] = useState<IBlob | null>(null);
-  const [createPost] = useMutation(CREATE_POST);
+  const { createPost } = useContext(PostsContext) as IPostsContext;
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     // TODO: Validate form fields here
-    if (!name || !blob) return;
+    if (!title || !blob) return;
     try {
-      const result = await createPost({ variables: { createPostInput: { title: name, signedBlobId: blob.signed_id }}})
-      setPost(result.data.createPost);
+      await createPost({ title, blob })
       onSuccess();
     } catch(err) {
       onErrors()
@@ -47,10 +43,10 @@ export const NewPhotoModal = ({ onClose, onSuccess, onErrors }: NewPhotoModalPro
           </InputLabel>
           <InputField
             type="text"
-            name="post[name]"
+            name="post[title]"
             placeholder="Suspendisse elit massa"
-            value={name}
-            onChange={event => setName(event.target.value)} />
+            value={title}
+            onChange={event => setTitle(event.target.value)} />
         </InputGroup>
 
         <InputGroup>
