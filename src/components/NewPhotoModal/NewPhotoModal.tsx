@@ -8,13 +8,13 @@ import { InputLabel } from '../InputLabel';
 import { CancelButton } from '../CancelButton';
 import { ActionButton } from '../ActionButton';
 import { DropFileInput } from '../DropFileInput';
-import { ModalActionButtons } from '../ModalActionButtons';
+import { NewPhotoModalFormButtons } from './NewPhotoModal.styled';
 import { NewPhotoModalProps } from './types';
 import { IBlob } from '../../hooks/useDirectUpload/types';
 import { PostModel } from '../../models';
 import { CREATE_POST } from '../../api/mutations/posts';
 
-export const NewPhotoModal = ({ onClose, onSuccess, onErrors }: NewPhotoModalProps) => {
+export const NewPhotoModal = ({ onClose }: NewPhotoModalProps) => {
   const [name, setName] = useState<string>("");
   const [post, setPost] = useState<PostModel | null>(null);
   const [blob, setBlob] = useState<IBlob | null>(null);
@@ -24,13 +24,9 @@ export const NewPhotoModal = ({ onClose, onSuccess, onErrors }: NewPhotoModalPro
     event.preventDefault();
     // TODO: Validate form fields here
     if (!name || !blob) return;
-    try {
-      const result = await createPost({ variables: { createPostInput: { title: name, signedBlobId: blob.signed_id }}})
-      setPost(result.data.createPost);
-      onSuccess();
-    } catch(err) {
-      onErrors()
-    }
+    const result = await createPost({ variables: { createPostInput: { title: name, signedBlobId: blob.signed_id }}})
+
+    setPost(result.data.createPost);
     onClose();
   }
 
@@ -60,14 +56,14 @@ export const NewPhotoModal = ({ onClose, onSuccess, onErrors }: NewPhotoModalPro
           <DropFileInput onBlobUpload={(blob: IBlob) => { setBlob(blob) }} />
         </InputGroup>
 
-        <ModalActionButtons>
+        <NewPhotoModalFormButtons>
           <CancelButton type="button" onClick={onClose} >
             Cancel
           </CancelButton>
           <ActionButton type="submit">
             Submit
           </ActionButton>
-        </ModalActionButtons>
+        </NewPhotoModalFormButtons>
       </form>
     </Modal>
   )
