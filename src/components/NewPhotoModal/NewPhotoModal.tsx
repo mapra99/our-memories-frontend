@@ -8,13 +8,13 @@ import { InputLabel } from '../InputLabel';
 import { CancelButton } from '../CancelButton';
 import { ActionButton } from '../ActionButton';
 import { DropFileInput } from '../DropFileInput';
-import { NewPhotoModalFormButtons } from './NewPhotoModal.styled';
+import { ModalActionButtons } from '../ModalActionButtons';
 import { NewPhotoModalProps } from './types';
 import { IBlob } from '../../hooks/useDirectUpload/types';
 import { PostModel } from '../../models';
 import { CREATE_POST } from '../../api/mutations/posts';
 
-export const NewPhotoModal = ({ onClose }: NewPhotoModalProps) => {
+export const NewPhotoModal = ({ onClose, onSuccess, onErrors }: NewPhotoModalProps) => {
   const [name, setName] = useState<string>("");
   const [post, setPost] = useState<PostModel | null>(null);
   const [blob, setBlob] = useState<IBlob | null>(null);
@@ -24,9 +24,13 @@ export const NewPhotoModal = ({ onClose }: NewPhotoModalProps) => {
     event.preventDefault();
     // TODO: Validate form fields here
     if (!name || !blob) return;
-    const result = await createPost({ variables: { createPostInput: { title: name, signedBlobId: blob.signed_id }}})
-
-    setPost(result.data.createPost);
+    try {
+      const result = await createPost({ variables: { createPostInput: { title: name, signedBlobId: blob.signed_id }}})
+      setPost(result.data.createPost);
+      onSuccess();
+    } catch(err) {
+      onErrors()
+    }
     onClose();
   }
 
@@ -56,14 +60,14 @@ export const NewPhotoModal = ({ onClose }: NewPhotoModalProps) => {
           <DropFileInput onBlobUpload={(blob: IBlob) => { setBlob(blob) }} />
         </InputGroup>
 
-        <NewPhotoModalFormButtons>
+        <ModalActionButtons>
           <CancelButton type="button" onClick={onClose} >
             Cancel
           </CancelButton>
           <ActionButton type="submit">
             Submit
           </ActionButton>
-        </NewPhotoModalFormButtons>
+        </ModalActionButtons>
       </form>
     </Modal>
   )
