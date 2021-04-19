@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from "react"
 import { useMutation, useQuery } from '@apollo/client';
-import { IPostsContext, NewPostData, PaginationParams } from './types'
+import { IPostsContext, NewPostData } from './types'
 import { CREATE_POST } from '../../api/mutations/posts';
 import { FETCH_POSTS } from '../../api/queries/posts';
 import { PostModel } from '../../models';

@@ -1,4 +1,4 @@
-import { useEffect, useState, FormEvent } from 'react';
+import { useState, FormEvent } from 'react';
 import { DirectUpload } from '@rails/activestorage';
 import { IBlob, DirectUploadTypes } from './types';
 
