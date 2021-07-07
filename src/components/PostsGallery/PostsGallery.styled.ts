@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { BREAKPOINT_S } from '../../constants';
 
 export const PostsGalleryContainer = styled.div`
   display: flex;
@@ -7,6 +8,9 @@ export const PostsGalleryContainer = styled.div`
 `
 
 export const PostsGalleryColumn = styled.div`
-  width: 33%;
   box-sizing: border-box;
+
+  @media (min-width: ${BREAKPOINT_S}px) {
+    width: 33%;
+  }
 `

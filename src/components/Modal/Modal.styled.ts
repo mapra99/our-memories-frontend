@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { COLORS } from '../../constants';
+import { BREAKPOINT_S } from '../../constants';
 
 export const ModalContainer = styled.div`
   position: fixed;
@@ -20,6 +21,10 @@ export const ModalDialog = styled.div`
   width: 100%;
   max-width: 620px;
   margin: 0 16px;
-  padding: 24px 32px;
+  padding: 16px;
   border-radius: 12px;
+
+  @media (min-width: ${BREAKPOINT_S}px) {
+    padding: 24px 32px
+  }
 `;
